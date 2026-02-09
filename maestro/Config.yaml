@@ -1,0 +1,6 @@
+# maestro/Config.yaml
+appId: "com.newmway.newmwayapp" # THAY THẾ BẰNG BUNDLE ID THỰC TẾ
+timeout: 15000                   
+initFlow:
+  - launchApp:
+      clearState: true

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "433558499342",
+    "project_id": "newmwayteakwood-4bd2d",
+    "storage_bucket": "newmwayteakwood-4bd2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433558499342:android:26119d74088aafaa3a0c5f",
+        "android_client_info": {
+          "package_name": "com.newmway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433558499342-mfq3767h49r521hks7gseav68315ejdj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIc0W2eOX9tH9feBJ4QvD3A62tC-1jl6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433558499342-mfq3767h49r521hks7gseav68315ejdj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "433558499342-12qb33326p9pg8945krajs0md35n78bp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.newmway.newmwayapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
