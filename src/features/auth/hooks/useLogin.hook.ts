@@ -7,10 +7,12 @@ import { useAuthStore } from "../../../stores/authStore.zustand";
 import { getFcmToken } from "../../../utils/fcmHelper";
 import { useAddUserDeviceToken } from "../../shop/hooks/useUserDeviceToken.hook";
 import { Platform } from "react-native";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useLogin = () => {
     const { login: setLoggedIn } = useAuthStore();
     const { mutate: addDeviceToken } = useAddUserDeviceToken();
+    const queryClient = useQueryClient();
 
     return useCreateMutation<LoginResponse, Error, LoginFormSchema>(
         loginApi,
@@ -19,6 +21,9 @@ export const useLogin = () => {
         "Đăng nhập thất bại!",
         {
             onSuccess: async (data) => {
+                // Clear React Query cache để fetch data mới của user mới
+                queryClient.clear();
+                
                 // Lưu tokens vào MMKV
                 setTokens(data.accessToken, data.refreshToken);
 

@@ -36,7 +36,7 @@ const AboutUsScreen = () => {
     return (
         <View style={styles.container}>
             <PrimaryHeader title="Về Chúng Tôi" onBackPress={() => navigation.goBack()} />
-            
+
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
                     <View style={styles.logoContainer}>
@@ -44,17 +44,25 @@ const AboutUsScreen = () => {
                     </View>
 
                     {/* <Text style={styles.companyName}>NEWMWAY Teak Wood</Text> */}
-                    
+
                     <Text style={styles.sectionTitle}>Giới thiệu</Text>
                     <Text style={styles.description}>
-                        NEWMWAY Teak Wood chuyên cung cấp các sản phẩm gỗ teak cao cấp, 
-                        với chất lượng vượt trội và thiết kế tinh tế. Chúng tôi cam kết 
-                        mang đến cho khách hàng những sản phẩm tốt nhất từ nguồn gỗ bền vững.
+
+                        Công ty TNHH New Way, thành lập năm 2017, là đơn vị chuyên sản xuất và phân phối các dòng thớt gỗ tự nhiên cao cấp, hướng đến tiêu chí an toàn cho sức khỏe – bền bỉ – thân thiện môi trường.
+
+                    </Text>
+
+                    <Text style={styles.description}>
+                        Ngay từ những ngày đầu hoạt động, New Way xác định rõ định hướng phát triển lâu dài trong lĩnh vực đồ dùng nhà bếp từ gỗ tự nhiên, đặc biệt là các sản phẩm làm từ gỗ Teak (gỗ tếch) – loại gỗ có khả năng kháng ẩm tốt, độ bền cao và an toàn khi tiếp xúc thực phẩm.
+                    </Text>
+
+                    <Text style={styles.description}>
+                        Chúng tôi không chỉ cung cấp sản phẩm, mà còn mong muốn góp phần nâng cao nhận thức người tiêu dùng về việc lựa chọn các dụng cụ bếp an toàn, thay thế dần các sản phẩm nhựa và vật liệu kém thân thiện với môi trường.
                     </Text>
 
                     <Text style={styles.sectionTitle}>Thông tin liên hệ</Text>
-                    
-                    <TouchableOpacity 
+
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('phone')}
                         activeOpacity={0.7}
@@ -63,7 +71,7 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactValue}>+84 96 439 7011</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('email')}
                         activeOpacity={0.7}
@@ -72,7 +80,7 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactValue}>newmwayteakwood@gmail.com</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('website')}
                         activeOpacity={0.7}
@@ -80,17 +88,17 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactLabel}>Website:</Text>
                         <Text style={styles.contactValue}>https://newmwayteakwood.vn</Text>
                     </TouchableOpacity>
-                    
+
                     <View style={styles.contactItem}>
                         <Text style={styles.contactLabel}>Địa chỉ:</Text>
                         <Text style={styles.contactValue}>
-                           22G1,đường 63, phường Tân Phong, Quận 7, TP. Hồ Chí Minh
+                            22G1,đường 63, phường Tân Phong, Quận 7, TP. Hồ Chí Minh
                         </Text>
                     </View>
 
                     <Text style={styles.sectionTitle}>Mạng xã hội</Text>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('facebook')}
                         activeOpacity={0.7}
@@ -99,7 +107,7 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactValue}>thotgoteak.newwayteakwood</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('tiktok')}
                         activeOpacity={0.7}
@@ -108,7 +116,7 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactValue}>@newmway_teakwood</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.contactItem}
                         onPress={() => handleContactPress('shopee')}
                         activeOpacity={0.7}
@@ -117,7 +125,7 @@ const AboutUsScreen = () => {
                         <Text style={styles.contactValue}>newwayteakwood</Text>
                     </TouchableOpacity>
 
-                    
+
                 </View>
             </ScrollView>
         </View>
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.grayLight,
     },
     scrollView: {
-        flex: 1,  
+        flex: 1,
     },
     content: {
         padding: ifTablet(24, 20),

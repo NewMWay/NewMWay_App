@@ -42,7 +42,7 @@ const CheckoutRecipientInfo: React.FC<CheckoutRecipientInfoProps> = ({
       <View style={styles.container}>
         <View style={styles.infoContainer}>
           <View style={styles.emptyState}>
-            <Text style={styles.emptyTitle}>Chưa có địa chỉ nhận hàng</Text>s
+            <Text style={styles.emptyTitle}>Chưa có địa chỉ nhận hàng</Text>
             <Text style={styles.emptySubtitle}>
               Vui lòng thêm địa chỉ để tiếp tục đặt hàng
             </Text>

@@ -25,7 +25,7 @@ type ProductMediaProps = {
 const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent, variants, onVariantChange, optionValueStock, selectedOptions = {}, onOptionSelect, onImagePress }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState<number | null>(null);
-    const [selectedVariantImageIndex, setSelectedVariantImageIndex] = useState<number | null>(null);
+    const [_selectedVariantImageIndex, setSelectedVariantImageIndex] = useState<number | null>(null);
     const mainFlatListRef = useRef<FlatList>(null);
     const playVideoIcon = require('../../../assets/icons/icons8-play-video-48.png');
     const [isPlayingMap, setIsPlayingMap] = useState(new Map<string, boolean>());
@@ -52,28 +52,38 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
         }
     }, [selectedVariantIndex, variants, onVariantChange]);
 
-    // Combine all images: main images + all variant images
-    const getAllImages = () => {
-        let allImages = [...images];
+    // Combine all images: main images + all variant images with metadata
+    const getAllImagesWithMetadata = () => {
+        let allImages: Array<{ id: string; image: string; variantIndex?: number; variantName?: string; isMainImage: boolean }> = [];
+
+        // Add main images
+        images.forEach((img, index) => {
+            allImages.push({
+                id: `main_${index}`,
+                image: img,
+                isMainImage: true
+            });
+        });
+
+        // Add variant images
         if (variants && variants.length > 0) {
-            variants.forEach(variant => {
-                allImages = [...allImages, ...variant.images];
+            variants.forEach((variant, variantIndex) => {
+                variant.images.forEach((img, imageIndex) => {
+                    allImages.push({
+                        id: `variant_${variantIndex}_${imageIndex}`,
+                        image: img,
+                        variantIndex,
+                        variantName: variant.name,
+                        isMainImage: false
+                    });
+                });
             });
         }
+
         return allImages;
     };
 
-    // Get current display images based on selection
-    const getCurrentImages = () => {
-        if (selectedVariantIndex !== null && variants && variants[selectedVariantIndex]) {
-            return variants[selectedVariantIndex].images;
-        }
-        return images;
-    };
-
-    const allImages = getAllImages();
-    const currentImages = getCurrentImages();
-    const dataMedia = currentImages.map((img, index) => ({ id: String(index), image: img }));
+    const dataMedia = getAllImagesWithMetadata();
     const mediaHeight = heightPercent ? (height * heightPercent / 100) : height * 0.45;
 
     // Create thumbnail data with variant info - only variant images
@@ -100,7 +110,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
 
     const thumbnailData = getThumbnailData();
 
-    const renderMediaItem = ({ item }: { item: { id: string; image: string } }) => {
+    const renderMediaItem = ({ item }: { item: { id: string; image: string; variantIndex?: number; variantName?: string; isMainImage: boolean } }) => {
         // Function to extract YouTube video ID
         const getYouTubeVideoId = (url: string): string | null => {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -152,6 +162,12 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
                             resizeMode="contain"
                         />
                     )}
+                    {/* Variant Badge */}
+                    {!item.isMainImage && item.variantName && (
+                        <View style={styles.variantBadge}>
+                            <Text style={styles.variantBadgeText}>{item.variantName}</Text>
+                        </View>
+                    )}
                 </TouchableOpacity>
             </View>
         );
@@ -160,38 +176,36 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
         const contentOffsetX = event.nativeEvent.contentOffset.x;
         const index = Math.round(contentOffsetX / width);
         setActiveIndex(index);
+
+        // Auto-select variant when scrolling to variant image
+        const currentItem = dataMedia[index];
+        if (currentItem && !currentItem.isMainImage && currentItem.variantIndex !== undefined) {
+            if (selectedVariantIndex !== currentItem.variantIndex) {
+                setSelectedVariantIndex(currentItem.variantIndex);
+            }
+        } else if (currentItem?.isMainImage && selectedVariantIndex !== null) {
+            // Deselect variant when scrolling back to main images
+            setSelectedVariantIndex(null);
+        }
     };
 
     const handleThumbnailPress = (thumbnailItem: any) => {
-        // Only handle variant images since thumbnails only show variants
-        const variantIndex = thumbnailItem.variantIndex;
-        const imageIndex = thumbnailItem.imageIndex;
+        // Find the index in dataMedia where this variant image appears
+        const targetIndex = dataMedia.findIndex(
+            item => item.variantIndex === thumbnailItem.variantIndex &&
+                item.id === thumbnailItem.id
+        );
 
-        if (selectedVariantIndex === variantIndex && selectedVariantImageIndex === imageIndex) {
-            setSelectedVariantIndex(null);
-            setSelectedVariantImageIndex(null);
-            setActiveIndex(0);
-            if (onOptionSelect) {
-                Object.keys(selectedOptions).forEach(optionName => {
-                    onOptionSelect(optionName, '');
-                });
-            }
-        } else {
-            setSelectedVariantIndex(variantIndex);
-            setSelectedVariantImageIndex(imageIndex);
-            setActiveIndex(imageIndex);
-        }
-
-        setTimeout(() => {
-            const targetIndex = selectedVariantIndex !== null
-                ? imageIndex
-                : 0;
+        if (targetIndex !== -1) {
+            setSelectedVariantIndex(thumbnailItem.variantIndex);
+            setSelectedVariantImageIndex(thumbnailItem.imageIndex);
+            setActiveIndex(targetIndex);
 
             mainFlatListRef.current?.scrollToIndex({
                 index: targetIndex,
                 animated: true,
             });
-        }, 100);
+        }
     };
 
     // Get display text for variant section
@@ -199,29 +213,15 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
         if (!variants || variants.length === 0) return null;
 
         if (selectedVariantIndex !== null) {
-            return variants[selectedVariantIndex].name;
+            return `Đang xem: ${variants[selectedVariantIndex].name}`;
         }
 
-        return `Có ${variants.length} biến thể có sẵn`;
+        return `Có ${variants.length} biến thể - vuốt để xem tất cả`;
     };
 
     const renderPagination = () => {
-        // Calculate current position based on selection
-        let currentPosition;
-        let totalImages = allImages.length;
-
-        if (selectedVariantIndex !== null && variants && variants[selectedVariantIndex]) {
-            // If variant is selected, show position within all images
-            // Find the starting position of the selected variant in all images
-            let variantStartPosition = images.length;
-            for (let i = 0; i < selectedVariantIndex; i++) {
-                variantStartPosition += variants[i].images.length;
-            }
-            currentPosition = variantStartPosition + activeIndex + 1;
-        } else {
-            // If no variant selected, show position in main images
-            currentPosition = activeIndex + 1;
-        }
+        const currentPosition = activeIndex + 1;
+        const totalImages = dataMedia.length;
 
         return (
             <View style={styles.paginationContainer}>
@@ -233,8 +233,8 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ _id, images, heightPercent,
     };
 
     const renderThumbnail = ({ item }: { item: any }) => {
-        // Only variant images are shown in thumbnails
-        const isSelected = selectedVariantIndex === item.variantIndex && selectedVariantImageIndex === item.imageIndex;
+        // Check if this thumbnail's variant is currently being viewed
+        const isSelected = selectedVariantIndex === item.variantIndex;
 
         return (
             <TouchableOpacity
@@ -370,6 +370,22 @@ const styles = StyleSheet.create({
         width: ifTablet(60, 40),
         height: ifTablet(60, 40),
         tintColor: 'white',
+    },
+    variantBadge: {
+        position: 'absolute',
+        top: ifTablet(16, 12),
+        left: ifTablet(16, 12),
+        backgroundColor: 'rgba(238, 77, 45, 0.9)',
+        paddingHorizontal: ifTablet(12, 10),
+        paddingVertical: ifTablet(6, 5),
+        borderRadius: ifTablet(8, 6),
+        maxWidth: '80%',
+    },
+    variantBadgeText: {
+        color: 'white',
+        fontSize: ifTablet(13, 11),
+        fontFamily: 'Sora-SemiBold',
+        fontWeight: '600',
     },
     flatListContent: {
         alignItems: 'center',

@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   Switch,
   Text,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  // Platform
 } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
@@ -146,7 +148,12 @@ const AddAddressScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={'padding'}
+    // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <PrimaryHeader
         title="Thêm Địa Chỉ Mới"
         onBackPress={handleGoBack}
@@ -274,7 +281,7 @@ const AddAddressScreen = () => {
         onClose={() => setShowWardModal(false)}
         isLoading={loadingWards}
       />
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 

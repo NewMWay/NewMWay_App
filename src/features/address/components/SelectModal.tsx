@@ -7,7 +7,9 @@ import {
     TouchableOpacity,
     FlatList,
     StyleSheet,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
 import { Colors } from '../../../assets/styles/colorStyles';
 import { ifTablet } from '../../../utils/responsives/responsive';
@@ -25,6 +27,14 @@ interface SelectModalProps {
     onClose: () => void;
     isLoading?: boolean;
 }
+
+const ItemSeparator = () => <View style={styles.separator} />;
+
+const EmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Không tìm thấy kết quả</Text>
+    </View>
+);
 
 export const SelectModal: React.FC<SelectModalProps> = ({
     visible,
@@ -65,7 +75,10 @@ export const SelectModal: React.FC<SelectModalProps> = ({
             animationType="slide"
             onRequestClose={handleClose}
         >
-            <View style={styles.modalOverlay}>
+            <KeyboardAvoidingView
+                style={styles.modalOverlay}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
                 <View style={styles.modalContent}>
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>{title}</Text>
@@ -100,16 +113,12 @@ export const SelectModal: React.FC<SelectModalProps> = ({
                                     <Text style={styles.optionText}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
-                            ItemSeparatorComponent={() => <View style={styles.separator} />}
-                            ListEmptyComponent={() => (
-                                <View style={styles.emptyContainer}>
-                                    <Text style={styles.emptyText}>Không tìm thấy kết quả</Text>
-                                </View>
-                            )}
+                            ItemSeparatorComponent={ItemSeparator}
+                            ListEmptyComponent={EmptyComponent}
                         />
                     )}
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 };

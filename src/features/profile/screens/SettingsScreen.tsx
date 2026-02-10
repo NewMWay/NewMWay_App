@@ -9,6 +9,8 @@ import { ProfileStackNavigationProp } from '../../../types/navigation/navigation
 import { useToast } from '../../../utils/toasts/useToast'
 import { useDeleteUserDeviceToken } from '../../shop/hooks/useUserDeviceToken.hook'
 import { getFcmToken } from '../../../utils/fcmHelper'
+import { useQueryClient } from '@tanstack/react-query'
+import { signOutFromGoogle } from '../../../utils/auth/googleAuthHelper'
 
 const SettingsScreen = () => {
     const navigation = useNavigation<ProfileStackNavigationProp>()
@@ -16,6 +18,7 @@ const SettingsScreen = () => {
     const userProfile = useAuthStore((state) => state.userProfile)
     const { showSuccess } = useToast()
     const { mutate: deleteDeviceToken } = useDeleteUserDeviceToken()
+    const queryClient = useQueryClient()
 
     const arrowIcon = require('../../../assets/icons/icons8-forward-48.png')
     const logoutIcon = require('../../../assets/icons/icons8-forward-48.png')
@@ -34,6 +37,17 @@ const SettingsScreen = () => {
                     style: 'destructive',
                     onPress: async () => {
                         try {
+                            // Clear React Query cache
+                            queryClient.clear();
+                            
+                            // Sign out from Google (if logged in with Google)
+                            try {
+                                await signOutFromGoogle();
+                            } catch (error) {
+                                console.log('Google sign out error (may not be signed in with Google):', error);
+                            }
+                            
+                            // Delete FCM token
                             const fcmToken = await getFcmToken();
                             if (fcmToken) {
                                 deleteDeviceToken(
@@ -81,6 +95,16 @@ const SettingsScreen = () => {
                     onPress: async () => {
                         // Tạm thời dùng logout logic, sẽ xử lý sau
                         try {
+                            // Clear React Query cache
+                            queryClient.clear();
+                            
+                            // Sign out from Google (if logged in with Google)
+                            try {
+                                await signOutFromGoogle();
+                            } catch (error) {
+                                console.log('Google sign out error:', error);
+                            }
+                            
                             const fcmToken = await getFcmToken();
                             if (fcmToken) {
                                 deleteDeviceToken(
@@ -217,8 +241,8 @@ const SettingsScreen = () => {
 
                     {/* Cài đặt ứng dụng */}
                     {renderSectionHeader('CÀI ĐẶT ỨNG DỤNG')}
-                    {renderSettingItem('Giao Diện', () => { })}
-                    {renderSettingItem('Ngôn Ngữ', () => { })}
+                    {/* {renderSettingItem('Giao Diện', () => { })}
+                    {renderSettingItem('Ngôn Ngữ', () => { })} */}
                     {renderSettingItem('Liên Hệ Hỗ Trợ', () => {
                         const parentNavigation = navigation.getParent()
                         if (parentNavigation) {

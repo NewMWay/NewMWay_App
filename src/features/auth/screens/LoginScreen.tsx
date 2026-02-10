@@ -19,7 +19,7 @@ const LoginScreen = () => {
     const personIcon = require('../../../assets/icons/icons8-person-auth-48.png')
     const lockIcon = require('../../../assets/icons/icons8-lock-48.png')
     const googleIcon = require('../../../assets/icons/icons8-google-48.png')
-    const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
+    // const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
 
     const navigation = useNavigation<AuthStackNavigationProp>();
     const { showSuccess, showError } = useToast();
@@ -220,10 +220,10 @@ const LoginScreen = () => {
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.socialButton}>
+                        {/* <TouchableOpacity style={styles.socialButton}>
                             <Image source={facebookIcon} style={styles.socialIcon} />
                             <Text style={styles.socialButtonText}>Facebook</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
 
                 </View>

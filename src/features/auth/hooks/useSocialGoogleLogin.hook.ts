@@ -6,10 +6,12 @@ import { useAddUserDeviceToken } from "../../shop/hooks/useUserDeviceToken.hook"
 import { setTokens } from "../../../services/stores/authStore.mmkv";
 import { getFcmToken } from "../../../utils/fcmHelper";
 import { Platform } from "react-native";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useSocialGoogleLogin = () => {
     const { login: setLoggedIn } = useAuthStore();
     const { mutate: addDeviceToken } = useAddUserDeviceToken();
+    const queryClient = useQueryClient();
 
     return useCreateMutation<SocialLoginGoogleResponse, Error, SocialLoginGoogleRequest>(
         socialLoginWithGoogleApi,
@@ -19,6 +21,9 @@ export const useSocialGoogleLogin = () => {
 
         {
             onSuccess: async (data) => {
+                // Clear React Query cache để fetch data mới của user mới
+                queryClient.clear();
+                
                 setTokens(data.accessToken, data.refreshToken);
                 setLoggedIn("user", data.accessToken, data.refreshToken)
 

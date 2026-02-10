@@ -1,5 +1,5 @@
 import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
 import { useNavigation } from '@react-navigation/native'
@@ -12,6 +12,8 @@ import { useOtp } from '../hooks/useOtp.hook'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
 import TermsModal from '../../../components/common/Modal/TermsModal'
 import CheckBox from '../../../components/common/CheckBox/CheckBox'
+import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
+import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
 
 const RegisterScreen = () => {
   const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
@@ -21,14 +23,16 @@ const RegisterScreen = () => {
   const lockIcon = require('../../../assets/icons/icons8-lock-48.png')
   const unlockIcon = require('../../../assets/icons/icons8-padlock-48.png')
   const googleIcon = require('../../../assets/icons/icons8-google-48.png')
-  const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
+  // const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
 
 
   const navigation = useNavigation<AuthStackNavigationProp>();
 
-  const { showError } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const { mutate: sendOtp, isPending: isSendingOtp } = useOtp();
+  const { mutate: socialGoogleLoginMutate, isPending: isSocialGoogleLoginPending } = useSocialGoogleLogin();
+  
   const [isLoadingSend, setIsLoadingSend] = useState(false);
   const [isTermsModalVisible, setTermsModalVisible] = useState(false);
   const [isPrivacyModalVisible, setPrivacyModalVisible] = useState(false);
@@ -46,7 +50,11 @@ const RegisterScreen = () => {
     },
   });
 
-  const isLoading = isSendingOtp || isLoadingSend;
+  const isLoading = isSendingOtp || isLoadingSend || isSocialGoogleLoginPending;
+
+  useEffect(() => {
+    configureGoogleSignIn();
+  }, []);
 
 
   const onSubmit = (_data: RegisterFormSchema) => {
@@ -84,6 +92,33 @@ const RegisterScreen = () => {
 
   const handleBackLogin = () => {
     navigation.goBack();
+  }
+
+  const handleSocialGoogleLogin = async () => {
+    try {
+      const idToken = await signInWithGoogle();
+      if (idToken) {
+        socialGoogleLoginMutate({ idToken },
+          {
+            onSuccess: () => {
+              showSuccess("Chào mừng bạn!", "Đăng nhập thành công!");
+              navigation.getParent()?.reset({
+                index: 0,
+                routes: [{
+                  name: "TabNavigation",
+                  params: {
+                    screen: "MainTabs"
+                  }
+                }]
+              });
+            },
+          }
+        );
+      }
+    } catch (error) {
+      showError('Đăng nhập Google thất bại. Vui lòng thử lại.');
+      console.error('Google Login Error:', error);
+    }
   }
 
 
@@ -276,15 +311,19 @@ const RegisterScreen = () => {
 
           {/* Option Login with gg & fb */}
           <View style={styles.socialLoginContainer}>
-            <TouchableOpacity style={styles.socialButton}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleSocialGoogleLogin}
+              disabled={isLoading}
+            >
               <Image source={googleIcon} style={styles.socialIcon} />
               <Text style={styles.socialButtonText}>Google</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.socialButton}>
+            {/* <TouchableOpacity style={styles.socialButton}>
               <Image source={facebookIcon} style={styles.socialIcon} />
               <Text style={styles.socialButtonText}>Facebook</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
         </View>

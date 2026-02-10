@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.textWhite,
     borderRadius: 16,
+    marginBottom: 50,
   },
   chibiAnimation: {
     width: 300,
