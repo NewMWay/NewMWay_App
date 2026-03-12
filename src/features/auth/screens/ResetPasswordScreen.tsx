@@ -1,53 +1,51 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { useToast } from '../../../utils/toasts/useToast'
 import { AuthStackNavigationProp } from '../../../types/navigation/navigation'
 import { Controller, useForm } from 'react-hook-form'
-import { ResetPasswordFormSchema, ResetPasswordSchema } from '../schemas/resetPassword.schema'
+import { NewPasswordFormSchema, NewPasswordSchema } from '../schemas/newPassword.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const ResetPasswordScreen = () => {
+  const route = useRoute();
+  const { email, type } = route.params as { email: string, type: 'ForgetPassword' };
   const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
   const lockIcon = require('../../../assets/icons/icons8-lock-48.png')
   const unlockIcon = require('../../../assets/icons/icons8-padlock-48.png')
   const chibiAnimationGif = require('../../../assets/animations/1030-vip-unscreen.gif');
 
   const navigation = useNavigation<AuthStackNavigationProp>();
-  const { showSuccess, showError } = useToast();
+  const { showError } = useToast();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<ResetPasswordFormSchema>({
-    resolver: zodResolver(ResetPasswordSchema),
+  const { control, handleSubmit, formState: { errors } } = useForm<NewPasswordFormSchema>({
+    resolver: zodResolver(NewPasswordSchema),
     mode: 'onBlur',
     defaultValues: {
-      password: '',
+      newPassword: '',
       confirmPassword: '',
     },
   });
 
-  const onSubmit = (_data: ResetPasswordFormSchema) => {
+  const onSubmit = (_data: NewPasswordFormSchema) => {
     try {
       console.log("Data reset password", _data);
-      handleResetPassword();
+      handleResetPassword(_data);
     } catch (err: any) {
       showError(err, "Cập nhật mật khẩu thất bại!");
     }
   };
 
-  const handleResetPassword = () => {
-    showSuccess("Hãy đăng nhập lại", "Cập nhật mật khẩu thành công!");
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "LoginScreen" }]
-    });
+  const handleResetPassword = (_data: NewPasswordFormSchema) => {
+    navigation.navigate('OtpVerificationScreen', { email, type, dataForgotPassword: { newPassword: _data.newPassword } });
   }
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={'padding'}
-    // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
     >
 
       <ScrollView
@@ -67,7 +65,7 @@ const ResetPasswordScreen = () => {
           <View style={styles.inputContainer}>
             <Controller
               control={control}
-              name="password"
+              name="newPassword"
               render={({ field: { onChange, onBlur, value } }) => (
                 <>
                   <FormInput
@@ -80,8 +78,8 @@ const ResetPasswordScreen = () => {
                     onChangeText={onChange}
                     value={value}
                   />
-                  {errors.password?.message && (
-                    <Text style={styles.errorText}>{String(errors.password.message)}</Text>
+                  {errors.newPassword?.message && (
+                    <Text style={styles.errorText}>{String(errors.newPassword.message)}</Text>
                   )}
                 </>
               )}

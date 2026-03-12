@@ -1,4 +1,4 @@
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import { ifTablet } from '../../../utils/responsives/responsive'
@@ -146,20 +146,20 @@ const InfoTab = ({ username, fullName, phone, email, createdDate, lastModifiedDa
 
             {isEditMode && (
                 <View style={styles.buttonContainer}>
-                    <View style={styles.buttonWrapperCancel}>
-                        <Button
-                            title="Hủy"
-                            onPress={onCancel}
-                            color={Colors.textWhite}
-                        />
-                    </View>
-                    <View style={styles.buttonWrapperConfirm}>
-                        <Button
-                            title="Xác nhận"
-                            onPress={handlePressSave}
-                            color={Colors.textWhite}
-                        />
-                    </View>
+                    <TouchableOpacity
+                        style={styles.buttonWrapperCancel}
+                        onPress={onCancel}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.buttonTextCancel}>Hủy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonWrapperConfirm}
+                        onPress={handlePressSave}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.buttonTextConfirm}>Xác nhận</Text>
+                    </TouchableOpacity>
                 </View>
             )}
         </View>
@@ -222,7 +222,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        gap: ifTablet(16, 12),
         marginTop: ifTablet(32, 24),
         marginBottom: ifTablet(16, 12),
     },
@@ -230,13 +229,29 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.grayDark,
         borderRadius: 10,
-        overflow: 'hidden',
+        paddingVertical: ifTablet(14, 12),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: ifTablet(8, 6),
     },
     buttonWrapperConfirm: {
         flex: 1,
         backgroundColor: Colors.primary,
         borderRadius: 10,
-        overflow: 'hidden',
+        paddingVertical: ifTablet(14, 12),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: ifTablet(8, 6),
+    },
+    buttonTextCancel: {
+        fontSize: ifTablet(16, 14),
+        fontFamily: 'Sora-SemiBold',
+        color: Colors.textWhite,
+    },
+    buttonTextConfirm: {
+        fontSize: ifTablet(16, 14),
+        fontFamily: 'Sora-SemiBold',
+        color: Colors.textWhite,
     },
 
 })

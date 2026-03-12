@@ -47,6 +47,7 @@ export const OrderNoteModal: React.FC<OrderNoteModalProps> = ({
       <KeyboardAvoidingView
         style={styles.modalOverlay}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
       >
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>

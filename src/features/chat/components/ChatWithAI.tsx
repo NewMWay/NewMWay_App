@@ -50,7 +50,7 @@ export interface ChatWithAIRef {
 const ChatWithAI = forwardRef<ChatWithAIRef, ChatWithAIProps>(({ onStartChat, showWelcome = true, navigation, onClearHistory }, ref) => {
     const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
     const attachIcon = require('../../../assets/icons/icons8-paper-clip-48.png')
-    const emojiIcon = require('../../../assets/icons/icons8-smile-48.png')
+    // const emojiIcon = require('../../../assets/icons/icons8-smile-48.png')
     const sendIcon = require('../../../assets/icons/icons8-forward-48.png')
 
     const [messages, setMessages] = useState<Message[]>([])
@@ -368,7 +368,7 @@ const ChatWithAI = forwardRef<ChatWithAIRef, ChatWithAIProps>(({ onStartChat, sh
         <KeyboardAvoidingView
             style={styles.chatContainer}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
         >
             {/* Messages Area */}
             <ScrollView
@@ -503,9 +503,9 @@ const ChatWithAI = forwardRef<ChatWithAIRef, ChatWithAIProps>(({ onStartChat, sh
                         maxLength={500}
                     />
                     <View style={styles.inputActions}>
-                        <TouchableOpacity style={styles.iconButton}>
+                        {/* <TouchableOpacity style={styles.iconButton}>
                             <Image source={emojiIcon} style={styles.actionIcon} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
                             <Image source={attachIcon} style={styles.actionIcon} />
                         </TouchableOpacity>

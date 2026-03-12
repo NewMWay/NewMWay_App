@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   Switch,
   Text,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
@@ -219,7 +221,11 @@ const EditAddressScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
+    >
       <PrimaryHeader
         title="Sửa Địa Chỉ"
         onBackPress={handleGoBack}
@@ -347,7 +353,7 @@ const EditAddressScreen = () => {
         onClose={() => setShowWardModal(false)}
         isLoading={loadingWards}
       />
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 

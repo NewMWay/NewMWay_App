@@ -31,6 +31,7 @@ const TabIcon: React.FC<{ focused: boolean; iconSource: any }> = ({ focused, ico
 
     const scale = new Animated.Value(focused ? 1.2 : 1);
     const translateY = new Animated.Value(focused ? -5 : 0);
+    const iconSize = Platform.OS === 'android' ? 20 : ifTablet(30, 24);
     // React.useEffect(() => {
     //     Animated.timing(scale, {
     //         toValue: focused ? 1.2 : 1,
@@ -48,7 +49,7 @@ const TabIcon: React.FC<{ focused: boolean; iconSource: any }> = ({ focused, ico
                 useNativeDriver: true,
             }),
             Animated.timing(translateY, {
-                toValue: focused ? -10 : 0, // Đẩy icon lên -10px khi focused
+                toValue: focused ? (Platform.OS === 'android' ? 0 : -10) : 0, // Android không đẩy lên vì không có text
                 duration: 200,
                 useNativeDriver: true,
             }),
@@ -61,8 +62,8 @@ const TabIcon: React.FC<{ focused: boolean; iconSource: any }> = ({ focused, ico
             <Image
                 source={iconSource}
                 style={{
-                    width: ifTablet(30, 24),
-                    height: ifTablet(30, 24),
+                    width: iconSize,
+                    height: iconSize,
                     tintColor: focused ? Colors.textWhite : Colors.textWhite,
                 }}
             />
@@ -134,6 +135,10 @@ const MainTab = () => {
                 tabBarShowLabel: true,
                 // eslint-disable-next-line react/no-unstable-nested-components
                 tabBarLabel: ({ focused }) => {
+                    // Ẩn tên tab trên Android
+                    if (Platform.OS === 'android') {
+                        return null;
+                    }
                     if (focused && !(route.name === 'Mua Sắm' && ifTablet(true, false))) {
                         return (
                             <Text style={styles.titleStyle}>
@@ -156,9 +161,9 @@ const MainTab = () => {
                     backgroundColor: Colors.primary,
                     // backgroundColor: Colors.textWhite,
                     // position: 'absolute',
-                    height: Platform.OS === 'android' ? 105 : 90,
-                    paddingTop: 10,
-                    // paddingBottom: 10,
+                    height: Platform.OS === 'android' ? 60 : 90,
+                    paddingTop: Platform.OS === 'android' ? 8 : 10,
+                    paddingBottom: Platform.OS === 'android' ? 8 : 0,
                     borderRadius: 10,
                     paddingHorizontal: ifTablet(50, 10),
                     // marginBottom: ifTablet(20, 10),
@@ -172,7 +177,7 @@ const MainTab = () => {
                     justifyContent: 'center',
                     alignSelf: 'center',
                     padding: 0,
-                    paddingVertical: 10,
+                    paddingVertical: Platform.OS === 'android' ? 0 : 10,
                     flexDirection: ifTablet('column', 'column'),
                 }
             })}
@@ -247,7 +252,8 @@ const TabNavigation = () => {
     return (
         <SafeAreaProvider>
             {/* <LinearGradient colors={Gradients.backgroundPrimary} style={styles.safeArea}> */}
-            <SafeAreaView edges={['right', 'left']} style={styles.safeArea}>
+
+            <SafeAreaView edges={Platform.OS === 'android' ? ['right', 'left', 'bottom'] : ['right', 'left']} style={styles.safeArea}>
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="MainTabs" component={MainTab} />
                     <Stack.Screen
@@ -282,67 +288,67 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     titleStyle: {
-        fontSize: ifTablet(14, 10),
+        fontSize: Platform.OS === 'android' ? 9 : ifTablet(14, 10),
         color: Colors.textWhite,
         fontFamily: 'Sora-SemiBold',
-        marginTop: ifTablet(0, 2),
+        marginTop: Platform.OS === 'android' ? 1 : ifTablet(0, 2),
         marginLeft: ifTablet(5, 0),
         zIndex: 10,
     },
     glowCircle: {
-        width: ifTablet(90, 80),
-        height: ifTablet(90, 80),
+        width: Platform.OS === 'android' ? 65 : ifTablet(90, 80),
+        height: Platform.OS === 'android' ? 65 : ifTablet(90, 80),
         // borderTopLeftRadius: 50,
         // borderTopRightRadius: 50,
         // borderBottomLeftRadius: 2,
         // borderBottomRightRadius: 2,
-        borderRadius: ifTablet(45, 40),
+        borderRadius: Platform.OS === 'android' ? 32.5 : ifTablet(45, 40),
         backgroundColor: Colors.textWhite,
         opacity: 0.6,
         position: 'absolute',
-        top: -30,
+        top: Platform.OS === 'android' ? -17 : -30,
         zIndex: 1.5,
     },
 
     shopButtonContainer: {
-        width: ifTablet(70, 60),
-        height: ifTablet(70, 60),
-        borderRadius: ifTablet(35, 30),
+        width: Platform.OS === 'android' ? 50 : ifTablet(70, 60),
+        height: Platform.OS === 'android' ? 50 : ifTablet(70, 60),
+        borderRadius: Platform.OS === 'android' ? 25 : ifTablet(35, 30),
         backgroundColor: Colors.textWhite,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
-        top: -20,
+        top: Platform.OS === 'android' ? -10 : -20,
         zIndex: 2,
         shadowColor: '#ffffffff',
         shadowOffset: { width: 0, height: -3 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
         elevation: 10,
-        borderWidth: 5,
+        borderWidth: Platform.OS === 'android' ? 3 : 5,
         borderColor: 'rgba(255, 255, 255, 0.3)',
     },
 
     shopContainerWrapper: {
-        width: ifTablet(70, 60),
-        height: Platform.OS === 'android' ? 105 : 75,
+        width: Platform.OS === 'android' ? 50 : ifTablet(70, 60),
+        height: Platform.OS === 'android' ? 60 : 75,
         alignItems: 'center',
         position: 'relative',
     },
 
     semicircleBackground: {
-        width: ifTablet(100, 90),
-        height: ifTablet(100, 90),
+        width: Platform.OS === 'android' ? 75 : ifTablet(100, 90),
+        height: Platform.OS === 'android' ? 75 : ifTablet(100, 90),
         backgroundColor: Colors.primary,
-        borderRadius: ifTablet(50, 45),
+        borderRadius: Platform.OS === 'android' ? 37.5 : ifTablet(50, 45),
         position: 'absolute',
-        top: -35,
+        top: Platform.OS === 'android' ? -22 : -35,
         zIndex: 1,
     },
 
     shopIconStyle: {
-        width: ifTablet(35, 28),
-        height: ifTablet(35, 28),
+        width: Platform.OS === 'android' ? 24 : ifTablet(35, 28),
+        height: Platform.OS === 'android' ? 24 : ifTablet(35, 28),
         tintColor: Colors.primary,
     },
 })

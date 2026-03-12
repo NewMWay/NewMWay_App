@@ -1,4 +1,5 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
@@ -32,7 +33,7 @@ const RegisterScreen = () => {
 
   const { mutate: sendOtp, isPending: isSendingOtp } = useOtp();
   const { mutate: socialGoogleLoginMutate, isPending: isSocialGoogleLoginPending } = useSocialGoogleLogin();
-  
+
   const [isLoadingSend, setIsLoadingSend] = useState(false);
   const [isTermsModalVisible, setTermsModalVisible] = useState(false);
   const [isPrivacyModalVisible, setPrivacyModalVisible] = useState(false);
@@ -77,11 +78,11 @@ const RegisterScreen = () => {
 
 
   const handleRegister = (_data: RegisterFormSchema) => {
-    sendOtp({ email: _data.email },
+    sendOtp({ email: _data.email, type: 'Register' },
       {
         onSuccess: () => {
           // OTP sent successfully
-          navigation.navigate("OtpVerificationScreen", { email: _data.email, type: "register", dataRegister: _data });
+          navigation.navigate("OtpVerificationScreen", { email: _data.email, type: "Register", dataRegister: _data });
         },
         onError: (error: Error) => {
           showError(error.message || 'Gửi mã OTP thất bại!');
@@ -126,8 +127,8 @@ const RegisterScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={'padding'}
-    // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
     >
 
       <ScrollView
@@ -303,22 +304,22 @@ const RegisterScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.drawerContainer}>
+          {/* <View style={styles.drawerContainer}>
             <View style={styles.drawer} />
             <Text style={styles.textOr}>Hoặc</Text>
             <View style={styles.drawer} />
-          </View>
+          </View> */}
 
           {/* Option Login with gg & fb */}
           <View style={styles.socialLoginContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.socialButton}
               onPress={handleSocialGoogleLogin}
               disabled={isLoading}
             >
               <Image source={googleIcon} style={styles.socialIcon} />
               <Text style={styles.socialButtonText}>Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* <TouchableOpacity style={styles.socialButton}>
               <Image source={facebookIcon} style={styles.socialIcon} />

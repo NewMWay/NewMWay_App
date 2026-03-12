@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
         paddingBottom: Platform.OS === 'ios' ? ifTablet(24, 20) : ifTablet(12, 10),
         borderTopWidth: 0.5,
         borderTopColor: 'rgba(238, 77, 45, 0.2)',
+        backgroundColor: Platform.OS === 'android' ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 12,
-        elevation: 15,
+        elevation: Platform.OS === 'android' ? 20 : 15,
     },
     leftSection: {
         // flexDirection: 'row',

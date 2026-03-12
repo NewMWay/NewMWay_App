@@ -6,8 +6,8 @@ export type AuthStackParamList = {
     'LoginScreen': undefined;
     'RegisterScreen': undefined;
     'ForgotPasswordScreen': undefined;
-    'OtpVerificationScreen': { email: string, type: 'register' | 'forgotPassword', dataRegister?: any };
-    'ResetPasswordScreen': { email: string };
+    'OtpVerificationScreen': { email: string, type: 'Register' | 'ForgetPassword', dataRegister?: any, dataForgotPassword?: any };
+    'ResetPasswordScreen': { email: string, otp?: string, type: 'ForgetPassword' };
 };
 
 export type HomeStackParamList = {

@@ -3,6 +3,7 @@ import { EmailSchema } from '../../../services/validation/schemas/auth/email.sch
 
 export const SendOtpSchema = z.object({
     email: EmailSchema,
+    type: z.enum(['Register', 'ForgetPassword']),
 });
 
 export type SendOtpFormSchema = z.infer<typeof SendOtpSchema>;

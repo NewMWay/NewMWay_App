@@ -25,8 +25,9 @@ const HomeStack = () => {
             navigation.getParent()?.setOptions({
               tabBarStyle: {
                 backgroundColor: Colors.primary,
-                height: Platform.OS === 'android' ? 105 : 90,
-                paddingTop: 10,
+                height: Platform.OS === 'android' ? 60 : 90,
+                paddingTop: Platform.OS === 'android' ? 8 : 10,
+                paddingBottom: Platform.OS === 'android' ? 8 : 0,
                 borderRadius: 10,
                 paddingHorizontal: ifTablet(50, 10),
                 display: 'flex',

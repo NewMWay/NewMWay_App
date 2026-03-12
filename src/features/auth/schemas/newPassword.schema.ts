@@ -1,17 +1,11 @@
 import * as z from 'zod';
 import { PasswordSchema } from '../../../services/validation/schemas/auth/password.schema';
 import { ConfirmPasswordSchema } from '../../../services/validation/schemas/auth/confirmPassword.schema';
-import { EmailSchema } from '../../../services/validation/schemas/auth/email.schema';
-import { OtpSchema } from '../../../services/validation/schemas/auth/otp.schema';
 
-
-export const ResetPasswordSchema = z.object({
-    email: EmailSchema,
+export const NewPasswordSchema = z.object({
     newPassword: PasswordSchema,
     confirmPassword: ConfirmPasswordSchema,
-    otp: OtpSchema,
 }).superRefine((data, ctx) => {
-    // Use superRefine so we can attach the error to the `confirmPassword` field
     if (data.newPassword !== data.confirmPassword) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -21,4 +15,4 @@ export const ResetPasswordSchema = z.object({
     }
 });
 
-export type ResetPasswordFormSchema = z.infer<typeof ResetPasswordSchema>;
+export type NewPasswordFormSchema = z.infer<typeof NewPasswordSchema>;

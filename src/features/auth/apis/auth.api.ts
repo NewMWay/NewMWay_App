@@ -5,7 +5,7 @@ import { SendOtpFormSchema } from '../schemas/sendOtp.schema';
 import { LoginResponse } from '../types/login.type';
 import { RegisterResponse } from '../types/register.type';
 import { RefreshTokenRequest, RefreshTokenResponse } from '../types/refreshToken';
-
+import { ResetPasswordFormSchema } from '../schemas/resetPassword.schema';
 
 export const registerApi = async (request: RegisterFormSchema): Promise<RegisterResponse> => {
     return apiClient<RegisterResponse>({
@@ -35,10 +35,19 @@ export const loginApi = async (request: LoginFormSchema): Promise<LoginResponse>
 
 export const refreshTokenApi = async (request: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
     console.log("Refreshing token with request:", request);
-    
+
     return apiClient<RefreshTokenResponse>({
         url: 'auth/refresh-token',
         method: 'POST',
+        data: request,
+    });
+}
+
+
+export const forgotPasswordApi = async (request: ResetPasswordFormSchema): Promise<void> => {
+    return apiClient<void>({
+        url: 'auth/forget-password',
+        method: 'PUT',
         data: request,
     });
 }

@@ -244,10 +244,10 @@ const ProductDetailsScreen = () => {
             }));
     }, [suggestedProductsData, productId]);
 
-    const defaultPromotion = {
-        id: 'promo1',
-        title: 'Giảm 10% cho toàn bộ đơn hàng vào ngày Black Friday',
-    }
+    // const defaultPromotion = {
+    //     id: 'promo1',
+    //     title: 'Giảm 10% cho toàn bộ đơn hàng vào ngày Black Friday',
+    // }
 
     const productRatings = React.useMemo(() => {
         return productReviews.map(review => {
@@ -674,13 +674,13 @@ const ProductDetailsScreen = () => {
 
                     <View style={styles.priceIntransitContainer}>
                         <View style={styles.priceContainer}>
-                            {defaultPromotion && (
+                            {/* {defaultPromotion && (
                                 <View style={styles.promotionContainer}>
                                     <Text style={styles.promotionText}>
                                         🎉 {defaultPromotion.title}
                                     </Text>
                                 </View>
-                            )}
+                            )} */}
                             {productOldPrice && (
                                 <Text style={styles.oldPriceText} ellipsizeMode='tail' numberOfLines={1}>{productOldPrice.toLocaleString('vi-VN')} đ</Text>
                             )}

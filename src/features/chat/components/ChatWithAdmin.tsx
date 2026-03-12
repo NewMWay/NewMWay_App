@@ -277,7 +277,7 @@ const ChatWithAdmin: React.FC<ChatWithAdminProps> = ({
                 setInputText(messageText)
                 Alert.alert(
                     'Lỗi gửi tin nhắn',
-                    'Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối và thử lại.',
+                    'Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối và thử lại hoặc tắt app đăng nhập lại.',
                     [
                         { text: 'OK', style: 'default' }
                     ]
@@ -321,8 +321,8 @@ const ChatWithAdmin: React.FC<ChatWithAdminProps> = ({
     return (
         <KeyboardAvoidingView
             style={styles.chatContainer}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 30}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
         >
             {/* Messages Area */}
             <ScrollView
@@ -368,7 +368,7 @@ const ChatWithAdmin: React.FC<ChatWithAdminProps> = ({
                                         onPress={() => {
                                             const parentNavigation = navigation.getParent()
                                             if (parentNavigation) {
-                                                parentNavigation.navigate('Mạa Sắm', {
+                                                parentNavigation.navigate('Mua Sắm', {
                                                     screen: 'ProductDetailsScreen',
                                                     params: { productId: message.product!.id }
                                                 })
@@ -429,7 +429,7 @@ const ChatWithAdmin: React.FC<ChatWithAdminProps> = ({
                                             onPress={() => {
                                                 const parentNavigation = navigation.getParent()
                                                 if (parentNavigation) {
-                                                    parentNavigation.navigate('Mạa Sắm', {
+                                                    parentNavigation.navigate('Mua Sắm', {
                                                         screen: 'ProductDetailsScreen',
                                                         params: { productId: message.product!.id }
                                                     })

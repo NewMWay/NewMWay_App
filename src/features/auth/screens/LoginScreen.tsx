@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
 import { useNavigation } from '@react-navigation/native'
@@ -10,21 +10,23 @@ import { LoginFormSchema, LoginSchema } from '../schemas/login.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin } from '../hooks/useLogin.hook'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
-import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
-import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
+// import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
+// import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
 
 
 const LoginScreen = () => {
     const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
     const personIcon = require('../../../assets/icons/icons8-person-auth-48.png')
     const lockIcon = require('../../../assets/icons/icons8-lock-48.png')
-    const googleIcon = require('../../../assets/icons/icons8-google-48.png')
+    // const googleIcon = require('../../../assets/icons/icons8-google-48.png')
     // const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
 
     const navigation = useNavigation<AuthStackNavigationProp>();
     const { showSuccess, showError } = useToast();
     const { mutate: loginMutate, isPending: isLoginPending } = useLogin();
-    const { mutate: socialGoogleLoginMutate, isPending: isSocialGoogleLoginPending } = useSocialGoogleLogin();
+    // const { mutate: socialGoogleLoginMutate,
+    //     // isPending: isSocialGoogleLoginPending
+    // } = useSocialGoogleLogin();
 
     const [isFormLoading, setIsFormLoading] = useState(false);
 
@@ -36,38 +38,41 @@ const LoginScreen = () => {
             password: '',
         },
     });
-    const isLoading = isFormLoading || isLoginPending;
+    const isLoading =
+        isFormLoading
+        ||
+        isLoginPending;
 
-    useEffect(() => {
-        configureGoogleSignIn();
-    }, [])
+    // useEffect(() => {
+    //     configureGoogleSignIn();
+    // }, [])
 
-    const handleSocialGoogleLogin = async () => {
-        try {
-            const idToken = await signInWithGoogle();
-            if (idToken) {
-                socialGoogleLoginMutate({ idToken },
-                    {
-                        onSuccess: () => {
-                            showSuccess("Chào mừng bạn trở lại!", "Đăng nhập thành công!");
-                            navigation.getParent()?.reset({
-                                index: 0,
-                                routes: [{
-                                    name: "TabNavigation",
-                                    params: {
-                                        screen: "MainTabs"
-                                    }
-                                }]
-                            });
-                        },
-                    }
-                );
-            }
-        } catch (error) {
-            showError('Đăng nhập Google thất bại. Vui lòng thử lại.',);
-            console.error('Google Login Error:', error);
-        }
-    }
+    // const handleSocialGoogleLogin = async () => {
+    //     try {
+    //         const idToken = await signInWithGoogle();
+    //         if (idToken) {
+    //             socialGoogleLoginMutate({ idToken },
+    //                 {
+    //                     onSuccess: () => {
+    //                         showSuccess("Chào mừng bạn trở lại!", "Đăng nhập thành công!");
+    //                         navigation.getParent()?.reset({
+    //                             index: 0,
+    //                             routes: [{
+    //                                 name: "TabNavigation",
+    //                                 params: {
+    //                                     screen: "MainTabs"
+    //                                 }
+    //                             }]
+    //                         });
+    //                     },
+    //                 }
+    //             );
+    //         }
+    //     } catch (error) {
+    //         showError('Đăng nhập Google thất bại. Vui lòng thử lại.',);
+    //         console.error('Google Login Error:', error);
+    //     }
+    // }
 
     const onSubmit = (_data: LoginFormSchema) => {
         try {
@@ -114,8 +119,8 @@ const LoginScreen = () => {
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior={'padding'}
-        // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20} 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
         >
 
             <ScrollView
@@ -201,15 +206,15 @@ const LoginScreen = () => {
                         </TouchableOpacity>
                     </View>
 
-                    <View style={styles.drawerContainer}>
+                    {/* <View style={styles.drawerContainer}>
                         <View style={styles.drawer} />
                         <Text style={styles.textOr}>Hoặc</Text>
                         <View style={styles.drawer} />
-                    </View>
+                    </View> */}
 
                     {/* Option Login with gg & fb */}
                     <View style={styles.socialLoginContainer}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={styles.socialButton}
                             onPress={handleSocialGoogleLogin}
                             disabled={isSocialGoogleLoginPending}
@@ -218,7 +223,7 @@ const LoginScreen = () => {
                             <Text style={styles.socialButtonText}>
                                 {isSocialGoogleLoginPending ? 'Đang xử lý...' : 'Google'}
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         {/* <TouchableOpacity style={styles.socialButton}>
                             <Image source={facebookIcon} style={styles.socialIcon} />

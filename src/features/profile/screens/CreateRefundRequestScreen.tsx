@@ -144,7 +144,8 @@ const CreateRefundRequestScreen = () => {
             />
 
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
                 style={styles.keyboardView}
             >
                 <ScrollView

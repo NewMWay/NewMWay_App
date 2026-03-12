@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
 import { useNavigation } from '@react-navigation/native'
@@ -8,6 +8,8 @@ import { AuthStackNavigationProp } from '../../../types/navigation/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { SendOtpFormSchema, SendOtpSchema } from '../schemas/sendOtp.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useOtp } from '../hooks/useOtp.hook'
+import LoadingOverlay from '../components/Loading/LoadingOverlay'
 
 
 const ForgotPasswordScreen = () => {
@@ -18,32 +20,53 @@ const ForgotPasswordScreen = () => {
   const navigation = useNavigation<AuthStackNavigationProp>();
   const { showSuccess, showError } = useToast();
 
+  const { mutate: sendOtp, isPending: isSendingOtp } = useOtp();
+  const [isLoadingSend, setIsLoadingSend] = useState(false);
+
   const { control, handleSubmit, formState: { errors } } = useForm<SendOtpFormSchema>({
     resolver: zodResolver(SendOtpSchema),
     mode: 'onSubmit',
     defaultValues: {
-      email: ''
+      email: '',
+      type: 'ForgetPassword'
     }
   });
 
+  const isLoading = isSendingOtp || isLoadingSend;
+
   const onSubmit = (_data: SendOtpFormSchema) => {
+    console.log("Data send OTP");
+
     try {
-      console.log("Data email", _data);
-      handleSendOtp(_data)
+      setIsLoadingSend(true);
+      setTimeout(() => {
+        setIsLoadingSend(false);
+        handleSendOtp(_data);
+      }, 3000);
     } catch (err: any) {
       showError(err?.message || 'Gửi OTP thất bại');
     }
   }
 
   const handleSendOtp = (_data: SendOtpFormSchema) => {
-    showSuccess("Gửi OTP thành công!");
-    navigation.navigate("OtpVerificationScreen", { email: _data.email, type: "forgotPassword" });
+    sendOtp({ email: _data.email, type: 'ForgetPassword' },
+      {
+        onSuccess: () => {
+          showSuccess("Gửi OTP thành công!");
+          // navigation.navigate("OtpVerificationScreen", { email: _data.email, type: "ForgetPassword" });
+          navigation.navigate("ResetPasswordScreen", { email: _data.email, type: "ForgetPassword" });
+        },
+        onError: (error: Error) => {
+          showError(error.message || 'Gửi mã OTP thất bại!');
+        }
+      })
   }
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={'padding'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
     // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
 
@@ -89,13 +112,19 @@ const ForgotPasswordScreen = () => {
 
           </View>
 
-          <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.buttonTitle}>Gửi OTP</Text>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}>
+            <Text style={styles.buttonTitle}>
+              {isLoading ? 'Đang gửi mã OTP...' : 'Gửi OTP'}
+            </Text>
           </TouchableOpacity>
 
 
         </View>
       </ScrollView>
+      <LoadingOverlay visible={isLoading} />
     </KeyboardAvoidingView>
   )
 }

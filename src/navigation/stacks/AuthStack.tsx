@@ -9,7 +9,7 @@ import ForgotPasswordScreen from '../../features/auth/screens/ForgotPasswordScre
 import OtpVerificationScreen from '../../features/auth/screens/OtpVerificationScreen'
 import ResetPasswordScreen from '../../features/auth/screens/ResetPasswordScreen'
 import LoginScreen from '../../features/auth/screens/LoginScreen'
-
+import { Platform } from 'react-native'
 
 const Stack = createNativeStackNavigator<AuthStackParamList>()
 
@@ -17,54 +17,55 @@ const Stack = createNativeStackNavigator<AuthStackParamList>()
 const AuthStack = () => {
     return (
         <SafeAreaProvider>
-            <SafeAreaView edges={['right', 'left']}  style={styles.safeArea}>
-                <Stack.Navigator 
-                    screenOptions={{ 
+            {/* với android thì bắt thêm cái bottom */}
+            <SafeAreaView edges={Platform.OS === 'android' ? ['right', 'left', 'bottom'] : ['right', 'left']} style={styles.safeArea}>
+                <Stack.Navigator
+                    screenOptions={{
                         headerShown: false,
                         contentStyle: { backgroundColor: 'white' }
                     }}>
-                    <Stack.Screen 
-                        name="SplashScreen" 
+                    <Stack.Screen
+                        name="SplashScreen"
                         component={SpashScreen}
                         options={{
                             animation: 'fade',
                             animationDuration: 800
                         }}
                     />
-                    <Stack.Screen 
-                        name="LoginScreen" 
+                    <Stack.Screen
+                        name="LoginScreen"
                         component={LoginScreen}
                         options={{
                             animation: 'fade_from_bottom',
                             animationDuration: 300
                         }}
                     />
-                    <Stack.Screen 
-                        name="RegisterScreen" 
+                    <Stack.Screen
+                        name="RegisterScreen"
                         component={RegisterScreen}
                         options={{
                             animation: 'ios_from_right',
                             animationDuration: 400
                         }}
                     />
-                    <Stack.Screen 
-                        name="ForgotPasswordScreen" 
+                    <Stack.Screen
+                        name="ForgotPasswordScreen"
                         component={ForgotPasswordScreen}
                         options={{
                             animation: 'ios_from_right',
                             animationDuration: 400
                         }}
                     />
-                    <Stack.Screen 
-                        name="OtpVerificationScreen" 
+                    <Stack.Screen
+                        name="OtpVerificationScreen"
                         component={OtpVerificationScreen}
                         options={{
                             animation: 'fade_from_bottom',
                             animationDuration: 400
                         }}
                     />
-                    <Stack.Screen 
-                        name="ResetPasswordScreen" 
+                    <Stack.Screen
+                        name="ResetPasswordScreen"
                         component={ResetPasswordScreen}
                         options={{
                             animation: 'ios_from_right',

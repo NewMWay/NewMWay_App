@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useUploadImage, useUploadVideo } from '../hooks/useMediaUpload.hook'
 import { UploadImageRequest, UploadVideoRequest } from '../types/mediaUpload.type'
@@ -210,7 +210,8 @@ const UpdateReviewScreen = () => {
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior={'padding'}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
         >
             <PrimaryHeader title="Chỉnh Sửa Đánh Giá" onBackPress={handleBackPress} />
 

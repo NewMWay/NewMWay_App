@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import { OtpInput } from "react-native-otp-entry";
@@ -12,11 +12,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegister } from '../hooks/useRegister.hook';
 import { useOtp } from '../hooks/useOtp.hook';
 import LoadingOverlay from '../components/Loading/LoadingOverlay';
+import { useForgotPassword } from '../hooks/useForgotPassword.hook';
 
 
 const OtpVerificationScreen = () => {
   const route = useRoute();
-  const { email, type, dataRegister } = route.params as { email: string, type: 'register' | 'forgotPassword', dataRegister?: any };
+  const { email, type, dataRegister, dataForgotPassword } = route.params as { email: string, type: 'Register' | 'ForgetPassword', dataRegister?: any, dataForgotPassword?: any };
   const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
   const chibiAnimationGif = require('../../../assets/animations/1030-vip-unscreen.gif');
 
@@ -25,10 +26,11 @@ const OtpVerificationScreen = () => {
 
   const { mutate: register, isPending: isRegistering } = useRegister();
   const { mutate: resendOtp, isPending: isResendingOtp } = useOtp();
+  const { mutate: forgotPassword, isPending: isForgottingPassword } = useForgotPassword();
 
   const [isLoadingSend, setIsLoadingSend] = useState(false);
 
-  const isLoading = isRegistering || isLoadingSend || isResendingOtp;
+  const isLoading = isRegistering || isLoadingSend || isResendingOtp || isForgottingPassword;
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 300);
@@ -66,7 +68,7 @@ const OtpVerificationScreen = () => {
 
   const handleConfirmOtp = (_data: OtpVerifyFormSchema) => {
     try {
-      if (type === 'register') {
+      if (type === 'Register') {
         const dataRegisterPayload = { ...dataRegister, otp: _data.otp };
         register(dataRegisterPayload, {
           onSuccess: () => {
@@ -88,7 +90,20 @@ const OtpVerificationScreen = () => {
 
       }
       else {
-        navigation.navigate("ResetPasswordScreen", { email });
+        // navigation.navigate("ResetPasswordScreen", { email, otp: _data.otp, type: 'ForgetPassword' });
+        const dataForgotPasswordPayload = { ...dataForgotPassword, otp: _data.otp, email: email, type: 'ForgetPassword' };
+        forgotPassword(dataForgotPasswordPayload, {
+          onSuccess: () => {
+            showSuccess("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "LoginScreen" }]
+            });
+          },
+          onError: (error: any) => {
+            showError(error?.message || "Xác nhận OTP thất bại!");
+          }
+        });
       }
 
     } catch (error: any) {
@@ -100,7 +115,7 @@ const OtpVerificationScreen = () => {
     try {
       setIsLoadingSend(true);
       setTimeout(() => {
-        resendOtp({ email },
+        resendOtp({ email, type },
           {
             onSuccess: () => {
               const newTime = new Date();
@@ -121,7 +136,9 @@ const OtpVerificationScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={'padding'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}
+
     // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
 
