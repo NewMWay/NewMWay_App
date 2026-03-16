@@ -1,5 +1,5 @@
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors } from '../../../assets/styles/colorStyles'
 import FormInput from '../components/Form/FormInput'
 import { useNavigation } from '@react-navigation/native'
@@ -10,25 +10,30 @@ import { LoginFormSchema, LoginSchema } from '../schemas/login.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin } from '../hooks/useLogin.hook'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
-// import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
-// import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
+import { useGoogleSetting } from '../hooks/useSetting.hook'
+import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
+import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
 
 
 const LoginScreen = () => {
     const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
     const personIcon = require('../../../assets/icons/icons8-person-auth-48.png')
     const lockIcon = require('../../../assets/icons/icons8-lock-48.png')
-    // const googleIcon = require('../../../assets/icons/icons8-google-48.png')
+    const googleIcon = require('../../../assets/icons/icons8-google-48.png')
     // const facebookIcon = require('../../../assets/icons/icons8-facebook-48.png')
 
     const navigation = useNavigation<AuthStackNavigationProp>();
     const { showSuccess, showError } = useToast();
     const { mutate: loginMutate, isPending: isLoginPending } = useLogin();
-    // const { mutate: socialGoogleLoginMutate,
-    //     // isPending: isSocialGoogleLoginPending
-    // } = useSocialGoogleLogin();
+    const { mutate: socialGoogleLoginMutate,
+        isPending: isSocialGoogleLoginPending
+    } = useSocialGoogleLogin();
 
     const [isFormLoading, setIsFormLoading] = useState(false);
+
+    const { data: googleSettingData, isLoading: isGoogleSettingLoading, isError: isGoogleSettingError } = useGoogleSetting();
+    console.log('Google Setting:', googleSettingData, isGoogleSettingLoading, isGoogleSettingError);
+
 
     const { control, handleSubmit, formState: { errors } } = useForm<LoginFormSchema>({
         resolver: zodResolver(LoginSchema),
@@ -43,36 +48,36 @@ const LoginScreen = () => {
         ||
         isLoginPending;
 
-    // useEffect(() => {
-    //     configureGoogleSignIn();
-    // }, [])
+    useEffect(() => {
+        configureGoogleSignIn();
+    }, [])
 
-    // const handleSocialGoogleLogin = async () => {
-    //     try {
-    //         const idToken = await signInWithGoogle();
-    //         if (idToken) {
-    //             socialGoogleLoginMutate({ idToken },
-    //                 {
-    //                     onSuccess: () => {
-    //                         showSuccess("Chào mừng bạn trở lại!", "Đăng nhập thành công!");
-    //                         navigation.getParent()?.reset({
-    //                             index: 0,
-    //                             routes: [{
-    //                                 name: "TabNavigation",
-    //                                 params: {
-    //                                     screen: "MainTabs"
-    //                                 }
-    //                             }]
-    //                         });
-    //                     },
-    //                 }
-    //             );
-    //         }
-    //     } catch (error) {
-    //         showError('Đăng nhập Google thất bại. Vui lòng thử lại.',);
-    //         console.error('Google Login Error:', error);
-    //     }
-    // }
+    const handleSocialGoogleLogin = async () => {
+        try {
+            const idToken = await signInWithGoogle();
+            if (idToken) {
+                socialGoogleLoginMutate({ idToken },
+                    {
+                        onSuccess: () => {
+                            showSuccess("Chào mừng bạn trở lại!", "Đăng nhập thành công!");
+                            navigation.getParent()?.reset({
+                                index: 0,
+                                routes: [{
+                                    name: "TabNavigation",
+                                    params: {
+                                        screen: "MainTabs"
+                                    }
+                                }]
+                            });
+                        },
+                    }
+                );
+            }
+        } catch (error) {
+            showError('Đăng nhập Google thất bại. Vui lòng thử lại.',);
+            console.error('Google Login Error:', error);
+        }
+    }
 
     const onSubmit = (_data: LoginFormSchema) => {
         try {
@@ -214,6 +219,20 @@ const LoginScreen = () => {
 
                     {/* Option Login with gg & fb */}
                     <View style={styles.socialLoginContainer}>
+                        {
+                            googleSettingData?.value === true && (
+                                <TouchableOpacity
+                                    style={styles.socialButton}
+                                    onPress={handleSocialGoogleLogin}
+                                    disabled={isSocialGoogleLoginPending}
+                                >
+                                    <Image source={googleIcon} style={styles.socialIcon} />
+                                    <Text style={styles.socialButtonText}>
+                                        {isSocialGoogleLoginPending ? 'Đang xử lý...' : 'Google'}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        }
                         {/* <TouchableOpacity
                             style={styles.socialButton}
                             onPress={handleSocialGoogleLogin}

@@ -15,6 +15,7 @@ import TermsModal from '../../../components/common/Modal/TermsModal'
 import CheckBox from '../../../components/common/CheckBox/CheckBox'
 import { useSocialGoogleLogin } from '../hooks/useSocialGoogleLogin.hook'
 import { configureGoogleSignIn, signInWithGoogle } from '../../../utils/auth/googleAuthHelper'
+import { useGoogleSetting } from '../hooks/useSetting.hook'
 
 const RegisterScreen = () => {
   const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02-1.png')
@@ -33,6 +34,7 @@ const RegisterScreen = () => {
 
   const { mutate: sendOtp, isPending: isSendingOtp } = useOtp();
   const { mutate: socialGoogleLoginMutate, isPending: isSocialGoogleLoginPending } = useSocialGoogleLogin();
+  const { data: googleSettingData, isLoading: isGoogleSettingLoading, isError: isGoogleSettingError } = useGoogleSetting();
 
   const [isLoadingSend, setIsLoadingSend] = useState(false);
   const [isTermsModalVisible, setTermsModalVisible] = useState(false);
@@ -304,14 +306,31 @@ const RegisterScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* <View style={styles.drawerContainer}>
-            <View style={styles.drawer} />
-            <Text style={styles.textOr}>Hoặc</Text>
-            <View style={styles.drawer} />
-          </View> */}
+          {
+            googleSettingData?.value === true && (
+              <View style={styles.drawerContainer}>
+                <View style={styles.drawer} />
+                <Text style={styles.textOr}>Hoặc</Text>
+                <View style={styles.drawer} />
+              </View>
+            )
+          }
+
+
 
           {/* Option Login with gg & fb */}
           <View style={styles.socialLoginContainer}>
+            {
+              googleSettingData?.value === true && (
+                <TouchableOpacity style={styles.socialButton}
+                  onPress={handleSocialGoogleLogin}
+                  disabled={isSocialGoogleLoginPending}
+                >
+                  <Image source={googleIcon} style={styles.socialIcon} />
+                  <Text style={styles.socialButtonText}>Google</Text>
+                </TouchableOpacity>
+              )
+            }
             {/* <TouchableOpacity
               style={styles.socialButton}
               onPress={handleSocialGoogleLogin}

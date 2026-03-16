@@ -11,14 +11,14 @@ const AppVersionScreen = () => {
     const logo = require('../../../assets/images/logo/LOGO-NEW-WAY-TEAK-WOOD-02.png')
 
     // Hardcoded version info - sẽ được lấy từ package.json hoặc config
-    const appVersion = '1.0.0'
+    const appVersion = '1.3'
     const buildNumber = '100'
-    const releaseDate = '02/02/2026'
+    const releaseDate = '12/03/2026'
 
     return (
         <View style={styles.container}>
             <PrimaryHeader title="Phiên Bản Ứng Dụng" onBackPress={() => navigation.goBack()} />
-            
+
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
                     <View style={styles.logoContainer}>
@@ -48,8 +48,8 @@ const AppVersionScreen = () => {
                         <Text style={styles.updateTitle}>Có gì mới trong phiên bản này?</Text>
                         <Text style={styles.updateItem}>• Cải thiện hiệu suất ứng dụng</Text>
                         <Text style={styles.updateItem}>• Sửa lỗi giao diện trên một số thiết bị</Text>
-                        <Text style={styles.updateItem}>• Thêm tính năng quản lý đơn hàng</Text>
-                        <Text style={styles.updateItem}>• Tối ưu hóa trải nghiệm người dùng</Text>
+                        <Text style={styles.updateItem}>• Sửa SplashScreen</Text>
+
                     </View>
 
                     <Text style={styles.copyright}>
